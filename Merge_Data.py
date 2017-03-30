@@ -10,18 +10,15 @@
 import numpy as np
 import pandas as pd
 
-####################################################################
-# We are looking at ADAs who screen arrestees, and not at ADAs who #
-# prosecute defendants at trial.  ADA attributes renamed here to   #
-# capture this distinction and separate ADA details from arrestees #
-####################################################################
+#############################################################
+# Rename ADA attributes to distinguish them from defendants #
+#############################################################
 
 old_names = ['ADA_CODE', 'BAR_ADMISSION', 'DOB', 'RACE', \
-	     'SEX', 'PARTY', 'ALT_PARTY']
+             'SEX', 'PARTY']
 
 new_names = ['SADA_CODE', 'SADA_BAR_ADMISSION', 'SADA_DOB', \
-	     'SADA_RACE', 'SADA_SEX', 'SADA_PARTY', \
-	     'SADA_ALT_PARTY']
+             'SADA_RACE', 'SADA_SEX', 'SADA_PARTY']
 
 name_dict=dict(zip(old_names, new_names))
 
@@ -48,25 +45,24 @@ dfdn = pd.read_table("csv/Dfdn-cln.csv", sep = '^', \
 		     .drop_duplicates('BOFI_NBR')
 
 
+##################################
+# Select attrtibutes of interest #
+##################################
 
-####################################
-# Selected attrtibutes of interest #
-####################################
-
-dsum_cln = dsum[['ADA_CODE', 'AREG_SEQ_NBR', 'BOFI_NBR', \
-		 'DFDN_SEQ_NBR', 'SCREENING_DISP_CODE', \
-		 'SYS_NBR', 'POLICE_RPT_DATE', 'POLICE_RPT_DAYS', \
+dsum_cln = dsum[['ADA_CODE', 'BOFI_NBR', 'DFDN_SEQ_NBR', \
+		 'SCREENING_DISP_CODE', 'SYS_NBR', \
+		 'POLICE_RPT_DATE', 'POLICE_RPT_DAYS', \
 		 'SCREENING_DAYS', 'SCREENING_DISP_DATE']]
 
-areg_cln = areg[['ADA_CODE', 'AREG_SEQ_NBR', 'ARREST_CREDIT_CODE', \
-		 'ARREST_DATE', 'ADD_DATE', 'BOFI_NBR', 'SYS_NBR', \
-		 'CHARGE_CAT', 'CHARGE_CLASS', 'CHARGE_TYPE', \
+areg_cln = areg[['ADA_CODE', 'ARREST_CREDIT_CODE', \
+		 'ARREST_DATE', 'ADD_DATE', 'BOFI_NBR', \
+		 'SYS_NBR', 'CHARGE_CLASS', 'CHARGE_TYPE', \
 		 'DFDN_SEQ_NBR', 'HABITUAL_OFFENDER_FLAG', \
 		 'FINAL_DETENTION_FLAG', 'INITIAL_DETENTION_FLAG', \
 		 'LEAD_CHARGE_CODE']]
 
 ada_cln  = ada[['ADA_CODE', 'BAR_ADMISSION', 'DOB', \
-		'RACE', 'SEX', 'PARTY', 'ALT_PARTY']]
+		'RACE', 'SEX', 'PARTY']]
 
 dfdn_cln = dfdn[['BOFI_NBR', 'JUVENILE_FLAG', 'CRIMINAL_FLAG', \
 		 'FBI_NBR', 'DOB', 'SEX', 'RACE']]
@@ -76,15 +72,17 @@ dfdn_cln = dfdn[['BOFI_NBR', 'JUVENILE_FLAG', 'CRIMINAL_FLAG', \
 # Merge all data into one data frame #
 ######################################
 
-data_merged = pd.merge(dsum_cln, areg_cln, on=['BOFI_NBR', \
-		       'DFDN_SEQ_NBR','SYS_NBR', 'ADA_CODE', \
-		       'AREG_SEQ_NBR'], how='left')
+data_merged = pd.merge(dsum_cln, areg_cln, \
+		on=['BOFI_NBR', 'DFDN_SEQ_NBR', \
+		    'SYS_NBR', 'ADA_CODE'], how='left')
 
 #New ADA names applied here
-data_merged = pd.merge(data_merged, ada_cln, on='ADA_CODE', how='left') \
+data_merged = pd.merge(data_merged, ada_cln, \
+		on='ADA_CODE', how='left') \
 		.rename(columns=name_dict)
 
-data_simple = pd.merge(data_merged, dfdn_cln, on='BOFI_NBR', how='inner')
+data_simple = pd.merge(data_merged, dfdn_cln, \
+		on='BOFI_NBR', how='inner')
 
 
 #######################################
