@@ -84,6 +84,10 @@ data_merged = pd.merge(data_merged, ada_cln, \
 data_simple = pd.merge(data_merged, dfdn_cln, \
 		on='BOFI_NBR', how='inner')
 
+#######################################
+# Add unique row identifier           #
+#######################################
+data_simple['UNIQUE_ID'] = pd.Series(np.arange(data_simple.shape[0]))
 
 #######################################
 # Export processed data frame to file #
