@@ -14,11 +14,9 @@ import pandas as pd
 # Rename ADA attributes to distinguish them from defendants #
 #############################################################
 
-old_names = ['ADA_CODE', 'BAR_ADMISSION', 'DOB', 'RACE', \
-             'SEX', 'PARTY']
+old_names = ['DOB', 'RACE', 'SEX']
 
-new_names = ['SADA_CODE', 'SADA_BAR_ADMISSION', 'SADA_DOB', \
-             'SADA_RACE', 'SADA_SEX', 'SADA_PARTY']
+new_names = ['SADA_DOB', 'SADA_RACE', 'SADA_SEX']
 
 name_dict=dict(zip(old_names, new_names))
 
@@ -40,7 +38,7 @@ ada  = pd.read_table("csv/Ada-cln.csv", sep = '^', \
 
 # Defendant history
 dfdn = pd.read_table("csv/Dfdn-cln.csv", sep = '^', \
-		     dtype='object', index_col=False) \
+             dtype='object', index_col=False) \
 		     .sort_values(['BOFI_NBR','ADDR_1']) \
 		     .drop_duplicates('BOFI_NBR')
 
@@ -54,7 +52,7 @@ dsum_cln = dsum[['ADA_CODE', 'BOFI_NBR', 'DFDN_SEQ_NBR', \
 		 'POLICE_RPT_DATE', 'POLICE_RPT_DAYS', \
 		 'SCREENING_DAYS', 'SCREENING_DISP_DATE']]
 
-areg_cln = areg[['ADA_CODE', 'ARREST_CREDIT_CODE', \
+areg_cln = areg[['ARREST_CREDIT_CODE', \
 		 'ARREST_DATE', 'ADD_DATE', 'BOFI_NBR', \
 		 'SYS_NBR', 'CHARGE_CLASS', 'CHARGE_TYPE', \
 		 'DFDN_SEQ_NBR', 'HABITUAL_OFFENDER_FLAG', \
@@ -74,7 +72,8 @@ dfdn_cln = dfdn[['BOFI_NBR', 'JUVENILE_FLAG', 'CRIMINAL_FLAG', \
 
 data_merged = pd.merge(dsum_cln, areg_cln, \
 		on=['BOFI_NBR', 'DFDN_SEQ_NBR', \
-		    'SYS_NBR', 'ADA_CODE'], how='left')
+		    'SYS_NBR'], how='left')
+
 
 #New ADA names applied here
 data_merged = pd.merge(data_merged, ada_cln, \
@@ -84,12 +83,11 @@ data_merged = pd.merge(data_merged, ada_cln, \
 data_simple = pd.merge(data_merged, dfdn_cln, \
 		on='BOFI_NBR', how='inner')
 
-#######################################
-# Add unique row identifier           #
-#######################################
+###########################################
+# Add ID column, sort, and export to file #
+###########################################
 data_simple['UNIQUE_ID'] = pd.Series(np.arange(data_simple.shape[0]))
-
-#######################################
-# Export processed data frame to file #
-#######################################
-data_simple.to_csv('data_simple.csv')
+cols = list(np.sort(data_simple.columns.values))
+cols.insert(0,(cols.pop()))
+data_simple = data_simple.ix[:,cols]
+data_simple.to_csv('data_simple.csv', index=False)
