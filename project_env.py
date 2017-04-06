@@ -7,7 +7,7 @@ def to_date(col):
     col.dropna(inplace=True)
     col = col[col!=0]
     col = col.astype(int)
-    converted = pd.to_datetime(col, format='%Y%m%d')
+    converted = pd.to_datetime(col, format='%Y%m%d', errors='coerce')
     return converted
     
 def getDfSummary(input_data):
