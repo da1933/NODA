@@ -7,7 +7,7 @@ def to_date(col):
     col.dropna(inplace=True)
     col = col[col!=0]
     col = col.astype(int)
-    converted = pd.to_datetime(col, format='%Y%m%d', errors='coerce')
+    converted = pd.to_datetime(col, format='%Y%m%d', errors ='coerce')
     return converted
     
 def getDfSummary(input_data):
@@ -54,3 +54,20 @@ def split_data(data, test_split=.2,  train_split=.64, by_var=None, random_state=
             print('Train Data', len(train_index))
             data_train, data_val = temp.iloc[train_index], temp.iloc[val_index]
         return data_test, data_train, data_val
+    
+def cnt_not_in_range(data, col, start='19880101', end='19991231'):
+    '''
+    Takes a dataframe and datetime column and returns the number of entries not within the range.
+    '''
+    cnt = data[data[col]< pd.to_datetime(start,format='%Y%m%d')][col].count()+\
+          data[data[col]> pd.to_datetime(end,format='%Y%m%d')][col].count()
+    return cnt
+
+def get_year(col):
+    '''Given a pandas series with datetime values, returns year for non-missing valid dates'''
+    return col.map(lambda x: x.year)
+        
+def get_month(col):
+    '''Given a pandas series with datetime values, returns year for non-missing valid dates'''
+    return col.map(lambda x: x.month)
+        
