@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 
 def to_date(col):
     '''Given a pandas series, returns pandas dates for non-missing valid dates'''
@@ -45,15 +46,25 @@ def split_data(data, test_split=.2,  train_split=.64, by_var=None, random_state=
         sss_test.get_n_splits(data,data[by_var])
         for train_index, test_index in sss_test.split(data,data[by_var]):
             temp, data_test = data.iloc[train_index], data.iloc[test_index]
+            print('Test Data', len(test_index))
             
         sss_val = StratifiedShuffleSplit(n_splits=1, test_size = 1-train_split/(1-test_split), random_state = random_state)
         sss_val.get_n_splits(temp,temp[by_var])
         print(temp.shape)
         for train_index, val_index in sss_val.split(temp,temp[by_var]):
-            print('VAL Data', len(val_index))
+            print('Val Data', len(val_index))
             print('Train Data', len(train_index))
             data_train, data_val = temp.iloc[train_index], temp.iloc[val_index]
         return data_test, data_train, data_val
+        
+def create_target(data, years=2):
+    '''
+    Takes a dataframe and returns the target and features, truncating the data by the last year - arrest timeframe threshold.
+    '''
+    x = data[data['ARREST_DATE_y'] >= 1991 - years]
+    y = np.where(x['NEXT_ARREST_TIME']<= 2 * years, 1, 0)
+    return x, y
+        
     
 def cnt_not_in_range(data, col, start='19880101', end='19991231'):
     '''
@@ -70,4 +81,16 @@ def get_year(col):
 def get_month(col):
     '''Given a pandas series with datetime values, returns year for non-missing valid dates'''
     return col.map(lambda x: x.month)
+	
+def one_hot_encode(cols):
+    '''Given a dataframe, returns the one hot encoding for columns in the dataframe'''
+    l_enc = LabelEncoder()
+    
+    cat_feat = cols.astype(str)
+    lenc_feat = cat_feat.apply(l_enc.fit_transform)
+    
+    enc = OneHotEncoder()
+    enc_feat = enc.fit_transform(lenc_feat)
+    return enc_feat
+
         
