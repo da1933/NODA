@@ -23,7 +23,7 @@ df['INITIAL_DETENTION_FLAG'].loc[pd.isnull(df['INITIAL_DETENTION_FLAG'])]=0
 df['INITIAL_DETENTION_FLAG'].loc[df['INITIAL_DETENTION_FLAG']=='N']=0
 df['INITIAL_DETENTION_FLAG'].loc[df['INITIAL_DETENTION_FLAG']=='Y']=1
 
-df['SADA_SEX'].loc[np.logical_and(df['SADA_SEX']!='M',df['SADA_SEX']!='F')]=np.NaN
+df['SADA_SEX'].loc[np.logical_and(df['SADA_SEX']!='M',df['SADA_SEX']!='F')]=-1
 df['SADA_SEX'].loc[df['SADA_SEX']=='M']=1
 df['SADA_SEX'].loc[df['SADA_SEX']=='F']=0
 
@@ -31,7 +31,7 @@ df['HABITUAL_OFFENDER_FLAG'].loc[np.logical_and(df['HABITUAL_OFFENDER_FLAG']!='Y
 df['HABITUAL_OFFENDER_FLAG'].loc[df['HABITUAL_OFFENDER_FLAG']=='N']=0
 df['HABITUAL_OFFENDER_FLAG'].loc[df['HABITUAL_OFFENDER_FLAG']=='Y']=1
 
-df['SEX'].loc[np.logical_and(df['SEX']!='M',df['SEX']!='F')]=np.NaN
+df['SEX'].loc[np.logical_and(df['SEX']!='M',df['SEX']!='F')]=-1
 df['SEX'].loc[df['SEX']=='M']=1
 df['SEX'].loc[df['SEX']=='F']=0
 
