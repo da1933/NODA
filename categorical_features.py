@@ -33,7 +33,7 @@ merged_cat_filled = pd.merge(merged_cat_filled, CGCD[['charge_code', 'charge_cla
 unmatched = merged_cat_filled.loc[merged_cat_filled['charge_code'].isnull() == True,'LEAD_CHARGE_CODE'].unique()
 merged_cat_filled.loc[merged_cat_filled['LEAD_CHARGE_CODE'].isin(unmatched),'LEAD_CHARGE_CODE'] = 'NA'
 
-merged_cat_filled.drop(['charge_code','charge_class'], axis = 1).to_csv('df_cat_features.csv',index=False)
+merged_cat_filled.drop(['charge_code','charge_class','charge_desc'], axis = 1).to_csv('df_cat_features.csv',index=False)
 
 '''
 create features using one hot encoding
