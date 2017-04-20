@@ -33,10 +33,12 @@ merged_cat_filled = pd.merge(merged_cat_filled, CGCD[['charge_code', 'charge_cla
 unmatched = merged_cat_filled.loc[merged_cat_filled['charge_code'].isnull() == True,'LEAD_CHARGE_CODE'].unique()
 merged_cat_filled.loc[merged_cat_filled['LEAD_CHARGE_CODE'].isin(unmatched),'LEAD_CHARGE_CODE'] = 'NA'
 
+merged_cat_filled.to_csv('df_cat_features.csv',index=False)
+
 '''
 create features using one hot encoding
 '''
-
+'''
 # first convert into integer values. one hot enconding only takes int input
 
 l_enc = LabelEncoder()
@@ -62,7 +64,7 @@ df = pd.DataFrame(X_enc.toarray())
 categorical_data_dummies = pd.concat([df, categorical_data_dummies], axis = 1)
 
 categorical_data_dummies.to_csv('df_cat_features.csv',index=False)
-
+'''
 
 
 
