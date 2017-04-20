@@ -60,7 +60,7 @@ def create_target(data, years=2):
     '''
     Takes a dataframe and returns the target and features, truncating the data by the last year - arrest timeframe threshold.
     '''
-    x = data[data['ARREST_DATE_y'] >= 1991 - years]
+    x = data[data['ARREST_DATE_y'] >= 1999 - years]
     y = np.where(x['NEXT_ARREST_TIME']<= 2 * years, 1, 0)
     return x, y
         
