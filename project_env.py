@@ -61,8 +61,8 @@ def create_target(data, years=2):
     '''
     Takes a dataframe and returns the target and features, truncating the data by the last year - arrest timeframe threshold.
     '''
-    x = data[data['SCREENING_DISP_DATE_y'] <= 1999 - years]
-    y = np.where(np.logical_and(x['SCREENING_DISP_DATE_y']>0,x['SCREENING_DISP_DATE_y']<= 365 * years), 1, 0)
+    x = data[data['ARREST_DATE_y'] <= 1999 - years]
+    y = np.where(np.logical_and(x['NEXT_ARREST_TIME']>0,x['NEXT_ARREST_TIME']<= 365 * years), 1, 0)
     return x, y
         
     
