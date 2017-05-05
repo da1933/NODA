@@ -13,10 +13,12 @@ class Error_Analysis():
         '''Takes (1) a filename where the non-encoded x data has been saved
         (2) a filename where the results associated with the x data have been saved and
         (3) the number of years for the creation of the categorical target variable '''
-        self.err_analysis = pd.read_csv(self.x_file, encoding = "ISO-8859-1", low_memory=False, index_col=0, )
+        self.err_analysis = pd.read_csv(self.x_file, encoding = "ISO-8859-1", low_memory=False, index_col=0)
         self.err_analysis, y = pe.create_target(self.err_analysis, years)
         self.err_analysis['True_Y'] = y.copy()
         pred_data = np.load(self.y_file)
+        print (len(self.err_analysis))
+        print (len(pred_data.copy()))
         self.err_analysis['Pred_Y'] = pred_data.copy()
         self.err_analysis['CORRECT'] = np.where((self.err_analysis['True_Y'] == self.err_analysis['Pred_Y']), 1, 0)
     
@@ -94,7 +96,7 @@ class Error_Analysis():
         '''Takes (1) number of years, (2) a list of numeric column names excluding binary
         (3) a list of numeric column names including binary and (4) a list of categorical variables,
         Runs all analyses.'''
-        self.create_err_analysis_df(2)
+        #self.create_err_analysis_df(years)
         self.divide_preds()
         self.plot_boxplots(numeric_exc_binary)
         self.mean_comparison(numeric)
