@@ -48,6 +48,17 @@ data_simple['AGE'] = data_simple['AGE'].apply(lambda x: x.days)
 #fill in mode for values where DOB was missing
 data_simple['AGE'] = np.where(data_simple['DOB_NA']==1,data_simple[data_simple['DOB_NA']==0]['AGE'].mode()\
                               ,data_simple['AGE'])
+data_simple['AGE_NA'] = data_simple['DOB_NA']
+#juvenile age is considered invalid if age <=16 and juvenile_flag = N
+#all juvenile ages are filled in as 16
+#there are 173 observations where juvenile flag = Y and age >18.  We are not correcting for those
+#we fill in missing AGE as 16 if juvenile flag = Y
+data_simple['AGE_JUV_INVALID'] = np.where((data_simple['AGE']/365<=16)&(data_simple['JUVENILE_FLAG']=='N'),1,0)
+data_simple['AGE'] = np.where(data_simple['AGE']/365<=16,16*365,data_simple['AGE'])
+data_simple['AGE'] = np.where((data_simple['DOB_NA']==1)&(data_simple['JUVENILE_FLAG']=='Y')\
+                              ,16*365\
+                              ,data_simple['AGE'])
+
 
 data_simple['BAR_ADMIT_DAYS'] = data_simple['ARREST_DATE'] - data_simple['BAR_ADMISSION']
 data_simple['BAR_ADMIT_DAYS'] = data_simple['BAR_ADMIT_DAYS'].apply(lambda x: x.days)
@@ -60,7 +71,7 @@ data_simple['ARREST_TO_SCREEN'] = data_simple['ARREST_TO_SCREEN'].apply(lambda x
 features_to_keep = ['UNIQUE_ID','POLICE_RPT_DATE','ARREST_DATE','DOB','SCREENING_DISP_DATE','BAR_ADMISSION',\
                    'POLICE_RPT_DATE_y','ARREST_DATE_y','DOB_y','SCREENING_DISP_DATE_y','BAR_ADMISSION_y',\
                    'POLICE_RPT_DATE_m','ARREST_DATE_m','DOB_m','SCREENING_DISP_DATE_m','BAR_ADMISSION_m',\
-                   'AGE','BAR_ADMIT_DAYS','ARREST_TO_SCREEN']
+                   'AGE','BAR_ADMIT_DAYS','ARREST_TO_SCREEN','AGE_NA','AGE_JUV_INVALID','JUVENILE_FLAG']
 
 df_date_features = data_simple[features_to_keep]
 
