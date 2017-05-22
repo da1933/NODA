@@ -1,1 +1,0 @@
-'\\begin{tabular}{lrr}\n\\toprule\n{} &     0 &     1 \\\\\n\\midrule\n0 &  3909 &  1387 \\\\\n1 &  1260 &  4438 \\\\\n\\bottomrule\n\\end{tabular}\n'
