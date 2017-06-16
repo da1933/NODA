@@ -32,7 +32,7 @@ class Error_Analysis():
         (3) a dataframe of correctly predicted data points and
         (4) a name for saving the plot'''
         plt.figure(1)
-        plt.gcf().set_size_inches(12,30) 
+        plt.gcf().set_size_inches(12,36) 
 
         rows = len(numeric_column_names)
 
@@ -41,13 +41,26 @@ class Error_Analysis():
         for variable in numeric_column_names:
             ax1 = plt.subplot(rows,2,i)
             if i ==1:
-                ax1.set_title('Incorrect Prediction')
+                ax1.set_title('Incorrect Prediction', fontsize=15)
             self.wrong_pred[variable].plot.box()
+            ax1.set_ylabel(variable.replace("_", " ").replace(" y", " YEAR").replace(" m", "MONTH"))
+            ax1.tick_params(
+                axis='x',          # changes apply to the x-axis
+                which='both',      # both major and minor ticks are affected
+                bottom='off',      # ticks along the bottom edge are off
+                top='off',         # ticks along the top edge are off
+                labelbottom='off')
             i = i + 1
             ax2 = plt.subplot(rows,2,i, sharey=ax1)
             if i ==2:
-                ax2.set_title('Correct Prediction')
+                ax2.set_title('Correct Prediction', fontsize=15)
             self.right_pred[variable].plot.box()
+            ax2.tick_params(
+                axis='x',          # changes apply to the x-axis
+                which='both',      # both major and minor ticks are affected
+                bottom='off',      # ticks along the bottom edge are off
+                top='off',         # ticks along the top edge are off
+                labelbottom='off')
             i = i + 1
         plt.savefig(self.filekey + '_boxplots.png')
     
@@ -88,8 +101,11 @@ class Error_Analysis():
         for i in range(len(cat_var)):
             self.pct_cat_compare[cat_var[i]].sort_values(by='Incorrectly Predicted', ascending=False)\
             .head().plot.bar(title=cat_var[i], rot=0, ax=axes[i])
+            axes[i].set_title(cat_var[i].replace("_", " "), fontsize=12)
 
-        plt.gcf().set_size_inches(12,30) 
+        fig.subplots_adjust(hspace=.5)
+
+        plt.gcf().set_size_inches(12,36) 
         plt.gcf().savefig(self.filekey + '_cat_dist.png')
 
     def all_error_analysis(self, years, numeric_exc_binary, numeric, categorical):
